@@ -90,7 +90,7 @@ class AgentWorker {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		float sellerStartReading = 0, sellerEndReading = 0, buyerStartReading = 0, buyerEndReading = 0;
+		double sellerStartReading = 0, sellerEndReading = 0, buyerStartReading = 0, buyerEndReading = 0;
 		JSONObject inputDetails1 = new JSONObject();
 		JSONObject response = null;
 		int continueStatus = 1;
@@ -117,7 +117,12 @@ class AgentWorker {
 				} else {
 					JSONObject data = (JSONObject) response.get("dataSanpshot");
 					if (!data.get("Active_E_Total_kWh").equals(null)) {
-						sellerStartReading = (int) data.get("Active_E_Total_kWh");
+						Object sellerStartReadingo = (Object) data.get("Active_E_Total_kWh");
+						if(sellerStartReadingo instanceof Integer) {
+							sellerStartReading = (int)sellerStartReadingo;
+						} if (sellerStartReadingo instanceof Double) {
+							sellerStartReading = (double)sellerStartReadingo;
+						}
 					} else {
 						sellerStartReading = 0;
 					}
@@ -136,7 +141,13 @@ class AgentWorker {
 					} else {
 						JSONObject data = (JSONObject) response.get("dataSanpshot");
 						if (!data.get("Active_E_Total_kWh").equals(null)) {
-							sellerEndReading = (int) data.get("Active_E_Total_kWh");
+							Object sellerEndReadingo = (Object) data.get("Active_E_Total_kWh");
+							if(sellerEndReadingo instanceof Integer) {
+								sellerEndReading = (int)sellerEndReadingo;
+							} if (sellerEndReadingo instanceof Double) {
+								sellerEndReading = (double)sellerEndReadingo;
+							}
+							//sellerEndReading = (int) data.get("Active_E_Total_kWh");
 						} else {
 							sellerEndReading = 0;
 						}
@@ -155,7 +166,13 @@ class AgentWorker {
 						} else {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							if (!data.get("Active_I_Total_kWh").equals(null)) {
-								buyerStartReading = (int) data.get("Active_I_Total_kWh");
+								Object buyerStartReadingo = (Object) data.get("Active_I_Total_kWh");
+								if(buyerStartReadingo instanceof Integer) {
+									buyerStartReading = (int)buyerStartReadingo;
+								} if (buyerStartReadingo instanceof Double) {
+									buyerStartReading = (double)buyerStartReadingo;
+								}
+								//buyerStartReading = (int) data.get("Active_I_Total_kWh");
 							} else {
 								buyerStartReading = 0;
 							}
@@ -179,6 +196,12 @@ class AgentWorker {
 							// buyerEndReading = (int) data.get("cumulativeEnergy-kWh(I)");
 							if (!data.get("Active_I_Total_kWh").equals(null)) {
 								buyerEndReading = (int) data.get("Active_I_Total_kWh");
+								Object buyerEndReadingo = (Object) data.get("Active_I_Total_kWh");
+								if(buyerEndReadingo instanceof Integer) {
+									buyerEndReading = (int)buyerEndReadingo;
+								} if (buyerEndReadingo instanceof Double) {
+									buyerEndReading = (double)buyerEndReadingo;
+								}
 							} else {
 								buyerEndReading = 0;
 							}
@@ -187,9 +210,9 @@ class AgentWorker {
 					//}
 					System.out.println("continueStatus4" + continueStatus);
 					//if (continueStatus != 0) {
-						float p_consumed = buyerEndReading - buyerStartReading;
-						float p_produced = sellerEndReading - sellerStartReading;
-						float s_fine = 0, b_fine = 0;
+						double p_consumed = buyerEndReading - buyerStartReading;
+						double p_produced = sellerEndReading - sellerStartReading;
+						double s_fine = 0, b_fine = 0;
 						if (p_produced < energy) {
 							s_fine = (energy - p_produced) * (price + 2.5f);
 						} else if (p_produced > energy) {
@@ -205,9 +228,9 @@ class AgentWorker {
 						System.out.println("  p_consumed " + p_consumed);
 						System.out.println("  b_fine " + b_fine);
 						System.out.println("  s_fine " + s_fine);
-						dbhelper.updateOrderAmount(p_produced, s_fine, p_consumed, b_fine,orderId);
+						//dbhelper.updateOrderAmount(p_produced, s_fine, p_consumed, b_fine,orderId);
 						System.out.println("  Status completed   ");
-						sdao.updateOrderStatus(orderId);
+						//sdao.updateOrderStatus(orderId);
 						System.out.println("continueStatus5" + continueStatus);
 					//}
 				//}
@@ -221,7 +244,7 @@ class AgentWorker {
 			} else if (overLappedTrades.size() == 0 && overLappedContracts.size() > 0) {
 
 				ArrayList<Object> listOfDates = null;
-				float buyerReading = 0;
+				double buyerReading = 0;
 				for (int i = 0; i < numberOfQuarters; i++) {
 					JSONObject requestObject = new JSONObject();
 					if (i == 0) {
@@ -232,8 +255,8 @@ class AgentWorker {
 
 					float powers = compareSellerTime(overLappedContracts, (Date) listOfDates.get(2),
 							(Date) listOfDates.get(3));
-					int buyerReading1 = 0;
-					int buyerReading2 = 0;
+					double buyerReading1 = 0;
+					double buyerReading2 = 0;
 					if (powers == 0) {
 
 						requestObject.put("meterId", (int) order.get("meterId"));
@@ -246,7 +269,13 @@ class AgentWorker {
 						} else {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							if (!data.get("Active_I_Total_kWh").equals(null)) {
-								buyerReading1 = (int) data.get("Active_I_Total_kWh");
+								//buyerReading1 = (int) data.get("Active_I_Total_kWh");
+								Object buyerReadingo = (Object) data.get("Active_I_Total_kWh");
+								if(buyerReadingo instanceof Integer) {
+									buyerReading1 = (int)buyerReadingo;
+								} if (buyerReadingo instanceof Double) {
+									buyerReading1 = (double)buyerReadingo;
+								}
 							} else {
 								buyerReading1 = 0;
 							}
@@ -264,7 +293,13 @@ class AgentWorker {
 						} else {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							if (!data.get("Active_I_Total_kWh").equals(null)) {
-								buyerReading2 = (int) data.get("Active_I_Total_kWh");
+								//buyerReading2 = (int) data.get("Active_I_Total_kWh");
+								Object buyerReadingo = (Object) data.get("Active_I_Total_kWh");
+								if(buyerReadingo instanceof Integer) {
+									buyerReading2 = (int)buyerReadingo;
+								} if (buyerReadingo instanceof Double) {
+									buyerReading2 = (double)buyerReadingo;
+								}
 							} else {
 								buyerReading2 = 0;
 							}
@@ -287,7 +322,13 @@ class AgentWorker {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							// buyerReading1 = buyerReading1 + (int) data.get("cumulativeEnergy-kWh(I)");
 							if (!data.get("Active_I_Total_kWh").equals(null)) {
-								buyerReading1 = (int) data.get("Active_I_Total_kWh");
+								//buyerReading1 = (int) data.get("Active_I_Total_kWh");
+								Object buyerReadingo = (Object) data.get("Active_I_Total_kWh");
+								if(buyerReadingo instanceof Integer) {
+									buyerReading1 = (int)buyerReadingo;
+								} if (buyerReadingo instanceof Double) {
+									buyerReading1 = (double)buyerReadingo;
+								}
 							} else {
 								buyerReading1 = 0;
 							}
@@ -304,7 +345,13 @@ class AgentWorker {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							// buyerReading2 = buyerReading2 + (int) data.get("cumulativeEnergy-kWh(I)");
 							if (!data.get("Active_I_Total_kWh").equals(null)) {
-								buyerReading2 = (int) data.get("Active_I_Total_kWh");
+								//buyerReading2 = (int) data.get("Active_I_Total_kWh");
+								Object buyerReadingo = (Object) data.get("Active_I_Total_kWh");
+								if(buyerReadingo instanceof Integer) {
+									buyerReading2 = (int)buyerReadingo;
+								} if (buyerReadingo instanceof Double) {
+									buyerReading2 = (double)buyerReadingo;
+								}
 							} else {
 								buyerReading2 = 0;
 							}
@@ -330,7 +377,13 @@ class AgentWorker {
 					JSONObject data = (JSONObject) response.get("dataSanpshot");
 					//sellerStartReading = (int) data.get("cumulativeEnergy-kWh(I)");
 					if (!data.get("Active_E_Total_kWh").equals(null)) {
-						sellerStartReading = (int) data.get("Active_E_Total_kWh");
+						//sellerStartReading = (int) data.get("Active_E_Total_kWh");
+						Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+						if(sellerReadingo instanceof Integer) {
+							sellerStartReading = (int)sellerReadingo;
+						} if (sellerReadingo instanceof Double) {
+							sellerStartReading = (double)sellerReadingo;
+						}
 					} else {
 						sellerStartReading = 0;
 					}
@@ -349,7 +402,13 @@ class AgentWorker {
 						JSONObject data = (JSONObject) response.get("dataSanpshot");
 						//sellerEndReading = (int) data.get("cumulativeEnergy-kWh(I)");
 						if (!data.get("Active_E_Total_kWh").equals(null)) {
-							sellerEndReading = (int) data.get("Active_E_Total_kWh");
+							//sellerEndReading = (int) data.get("Active_E_Total_kWh");
+							Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+							if(sellerReadingo instanceof Integer) {
+								sellerEndReading = (int)sellerReadingo;
+							} if (sellerReadingo instanceof Double) {
+								sellerEndReading = (double)sellerReadingo;
+							}
 						} else {
 							sellerEndReading = 0;
 						}
@@ -357,9 +416,9 @@ class AgentWorker {
 					}
 				//}
 
-				float p_consumed = buyerReading;
-				float p_produced = sellerEndReading - sellerStartReading;
-				float s_fine = 0, b_fine = 0;
+				double p_consumed = buyerReading;
+				double p_produced = sellerEndReading - sellerStartReading;
+				double s_fine = 0, b_fine = 0;
 				if (p_produced < energy) {
 					s_fine = (energy - p_produced) * (price + 2.5f);
 				} else if (p_produced > energy) {
@@ -375,9 +434,9 @@ class AgentWorker {
 				System.out.println("  p_consumed " + p_consumed);
 				System.out.println("  b_fine " + b_fine);
 				System.out.println("  s_fine " + s_fine);
-				dbhelper.updateOrderAmount(p_produced, s_fine, p_consumed, b_fine, orderId);
+				//dbhelper.updateOrderAmount(p_produced, s_fine, p_consumed, b_fine, orderId);
 				System.out.println("  Status completed   ");
-				sdao.updateOrderStatus(orderId);
+				//sdao.updateOrderStatus(orderId);
 				System.out.println("continueStatus5" + continueStatus);
 				validationResponse.put("buyerStartReading", buyerStartReading);
 				validationResponse.put("buyerEndReading",buyerEndReading );
@@ -387,10 +446,10 @@ class AgentWorker {
 				validationResponse.put("sellerFine", s_fine);
 			} else if (overLappedContracts.size() == 0 && overLappedTrades.size() > 0) {
 				ArrayList<Object> listOfDates = null;
-				float sellerReading = 0;
+				double sellerReading = 0;
 
 				for (int i = 0; i < numberOfQuarters; i++) {
-					float sellerReading1 = 0, sellerReading2 = 0;
+					double sellerReading1 = 0, sellerReading2 = 0;
 					JSONObject requestObject = new JSONObject();
 					if (i == 0) {
 						listOfDates = getSellerDates(startTs, i,startTs,endTs);
@@ -412,7 +471,13 @@ class AgentWorker {
 						} else {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							if (!data.get("Active_E_Total_kWh").equals(null)) {
-								sellerReading1 = (int) data.get("Active_E_Total_kWh");
+								//sellerReading1 = (int) data.get("Active_E_Total_kWh");
+								Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+								if(sellerReadingo instanceof Integer) {
+									sellerReading1 = (int)sellerReadingo;
+								} if (sellerReadingo instanceof Double) {
+									sellerReading1 = (double)sellerReadingo;
+								}
 							} else {
 								sellerReading1 = 0;
 							}
@@ -430,7 +495,13 @@ class AgentWorker {
 						} else {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							if (!data.get("Active_E_Total_kWh").equals(null)) {
-								sellerReading2 = (int) data.get("Active_E_Total_kWh");
+								//sellerReading2 = (int) data.get("Active_E_Total_kWh");
+								Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+								if(sellerReadingo instanceof Integer) {
+									sellerReading2 = (int)sellerReadingo;
+								} if (sellerReadingo instanceof Double) {
+									sellerReading2 = (double)sellerReadingo;
+								}
 							} else {
 								sellerReading2 = 0;
 							}
@@ -451,7 +522,13 @@ class AgentWorker {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							// sellerReading1 = sellerReading1 + (int) data.get("cumulativeEnergy-kWh(I)");
 							if (!data.get("Active_E_Total_kWh").equals(null)) {
-								sellerReading1 = (int) data.get("Active_E_Total_kWh");
+								//sellerReading1 = (int) data.get("Active_E_Total_kWh");
+								Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+								if(sellerReadingo instanceof Integer) {
+									sellerReading1 = (int)sellerReadingo;
+								} if (sellerReadingo instanceof Double) {
+									sellerReading1 = (double)sellerReadingo;
+								}
 							} else {
 								sellerReading1 = 0;
 							}
@@ -467,7 +544,13 @@ class AgentWorker {
 						} else {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							if (!data.get("Active_E_Total_kWh").equals(null)) {
-								sellerReading2 = (int) data.get("Active_E_Total_kWh");
+								//sellerReading2 = (int) data.get("Active_E_Total_kWh");
+								Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+								if(sellerReadingo instanceof Integer) {
+									sellerReading2 = (int)sellerReadingo;
+								} if (sellerReadingo instanceof Double) {
+									sellerReading2 = (double)sellerReadingo;
+								}
 							} else {
 								sellerReading2 = 0;
 							}
@@ -496,7 +579,13 @@ class AgentWorker {
 						if (((Object) data.get("Active_I_Total_kWh")).equals(null)) {
 							buyerStartReading = 0;
 						} else {
-							buyerStartReading = (int) data.get("Active_I_Total_kWh");
+						//	buyerStartReading = (int) data.get("Active_I_Total_kWh");
+							Object buyerReadingo = (Object) data.get("Active_I_Total_kWh");
+							if(buyerReadingo instanceof Integer) {
+								buyerStartReading = (int)buyerReadingo;
+							} if (buyerReadingo instanceof Double) {
+								buyerStartReading = (double)buyerReadingo;
+							}
 						}
 
 					}
@@ -516,16 +605,22 @@ class AgentWorker {
 						JSONObject data = (JSONObject) response.get("dataSanpshot");
 						// buyerEndReading = (int) data.get("cumulativeEnergy-kWh(I)");
 						if (!data.get("Active_I_Total_kWh").equals(null)) {
-							buyerEndReading = (int) data.get("Active_I_Total_kWh");
+							//buyerEndReading = (int) data.get("Active_I_Total_kWh");
+							Object buyerReadingo = (Object) data.get("Active_I_Total_kWh");
+							if(buyerReadingo instanceof Integer) {
+								buyerEndReading = (int)buyerReadingo;
+							} if (buyerReadingo instanceof Double) {
+								buyerEndReading = (double)buyerReadingo;
+							}
 						} else {
 							buyerEndReading = 0;
 						}
 
 					}
 
-					float p_consumed = buyerEndReading - buyerStartReading;
-					float p_produced = sellerReading;
-					float s_fine = 0, b_fine = 0;
+					double p_consumed = buyerEndReading - buyerStartReading;
+					double p_produced = sellerReading;
+					double s_fine = 0, b_fine = 0;
 					if (p_produced < energy) {
 						s_fine = (energy - p_produced) * (price + 2.5f);
 					} else if (p_produced > energy) {
@@ -541,9 +636,9 @@ class AgentWorker {
 					System.out.println("  p_consumed " + p_consumed);
 					System.out.println("  b_fine " + b_fine);
 					System.out.println("  s_fine " + s_fine);
-					dbhelper.updateOrderAmount(p_produced, s_fine, p_consumed, b_fine, orderId);
+					//dbhelper.updateOrderAmount(p_produced, s_fine, p_consumed, b_fine, orderId);
 					System.out.println("  Status completed   ");
-					sdao.updateOrderStatus(orderId);
+					//sdao.updateOrderStatus(orderId);
 					System.out.println("continueStatus5" + continueStatus);
 					validationResponse.put("buyerStartReading", buyerStartReading);
 					validationResponse.put("buyerEndReading",buyerEndReading );
@@ -554,10 +649,10 @@ class AgentWorker {
 				//}
 			} else {
 				ArrayList<Object> listOfDates = null;
-				float buyerReading = 0;
+				double buyerReading = 0;
 				for (int i = 0; i < numberOfQuarters; i++) {
 
-					float buyerReading1 = 0, buyerReading2 = 0;
+					double buyerReading1 = 0, buyerReading2 = 0;
 					JSONObject requestObject = new JSONObject();
 					if (i == 0) {
 						listOfDates = getSellerDates(startTs, i,startTs,endTs);
@@ -580,7 +675,13 @@ class AgentWorker {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							// buyerReading1 = buyerReading1 + (int) data.get("cumulativeEnergy-kWh(I)");
 							if (!data.get("Active_I_Total_kWh").equals(null)) {
-								buyerReading1 = (int) data.get("Active_I_Total_kWh");
+								//buyerReading1 = (int) data.get("Active_I_Total_kWh");
+								Object buyerReadingo = (Object) data.get("Active_I_Total_kWh");
+								if(buyerReadingo instanceof Integer) {
+									buyerReading1 = (int)buyerReadingo;
+								} if (buyerReadingo instanceof Double) {
+									buyerReading1 = (double)buyerReadingo;
+								}
 							} else {
 								buyerReading1 = 0;
 							}
@@ -598,7 +699,13 @@ class AgentWorker {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							// buyerReading2 = buyerReading2 + (int) data.get("cumulativeEnergy-kWh(I)");
 							if (!data.get("Active_I_Total_kWh").equals(null)) {
-								buyerReading2 = (int) data.get("Active_I_Total_kWh");
+								//buyerReading2 = (int) data.get("Active_I_Total_kWh");
+								Object buyerReadingo = (Object) data.get("Active_I_Total_kWh");
+								if(buyerReadingo instanceof Integer) {
+									buyerReading2 = (int)buyerReadingo;
+								} if (buyerReadingo instanceof Double) {
+									buyerReading2 = (double)buyerReadingo;
+								}
 							} else {
 								buyerReading2 = 0;
 							}
@@ -648,9 +755,9 @@ class AgentWorker {
 
 					}
 				}
-				float sellerReading = 0;
+				double sellerReading = 0;
 				for (int i = 0; i < numberOfQuarters; i++) {
-					float sellerReading1 = 0, sellerReading2 = 0;
+					double sellerReading1 = 0, sellerReading2 = 0;
 					JSONObject requestObject = new JSONObject();
 					if (i == 0) {
 						listOfDates = getSellerDates(startTs, i,startTs,endTs);
@@ -672,7 +779,13 @@ class AgentWorker {
 						} else {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							if (!data.get("Active_E_Total_kWh").equals(null)) {
-								sellerReading1 = (int) data.get("Active_E_Total_kWh");
+								//sellerReading1 = (int) data.get("Active_E_Total_kWh");
+								Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+								if(sellerReadingo instanceof Integer) {
+									sellerReading1 = (int)sellerReadingo;
+								} if (sellerReadingo instanceof Double) {
+									sellerReading1 = (double)sellerReadingo;
+								}
 							} else {
 								sellerReading1 = 0;
 							}
@@ -689,7 +802,13 @@ class AgentWorker {
 						} else {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							if (!data.get("Active_E_Total_kWh").equals(null)) {
-								sellerReading2 = (int) data.get("Active_E_Total_kWh");
+								//sellerReading2 = (int) data.get("Active_E_Total_kWh");
+								Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+								if(sellerReadingo instanceof Integer) {
+									sellerReading2 = (int)sellerReadingo;
+								} if (sellerReadingo instanceof Double) {
+									sellerReading2 = (double)sellerReadingo;
+								}
 							} else {
 								sellerReading2 = 0;
 							}
@@ -709,7 +828,13 @@ class AgentWorker {
 						} else {
 							JSONObject data = (JSONObject) response.get("dataSanpshot");
 							if (!data.get("Active_E_Total_kWh").equals(null)) {
-								sellerReading1 = (int) data.get("Active_E_Total_kWh");
+								//sellerReading1 = (int) data.get("Active_E_Total_kWh");
+								Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+								if(sellerReadingo instanceof Integer) {
+									sellerReading1 = (int)sellerReadingo;
+								} if (sellerReadingo instanceof Double) {
+									sellerReading1 = (double)sellerReadingo;
+								}
 							} else {
 								sellerReading1 = 0;
 							}
@@ -730,7 +855,13 @@ class AgentWorker {
 //							sellerReading2 = sellerReading2
 //									+ (int) data.get("cumulativeEnergy-kWh(I)") ;
 							if (!data.get("Active_E_Total_kWh").equals(null)) {
-								sellerReading2 = (int) data.get("Active_E_Total_kWh");
+								//sellerReading2 = (int) data.get("Active_E_Total_kWh");
+								Object sellerReadingo = (Object) data.get("Active_E_Total_kWh");
+								if(sellerReadingo instanceof Integer) {
+									sellerReading2 = (int)sellerReadingo;
+								} if (sellerReadingo instanceof Double) {
+									sellerReading2 = (double)sellerReadingo;
+								}
 							} else {
 								sellerReading2 = 0;
 							}
@@ -743,9 +874,9 @@ class AgentWorker {
 					}
 				}
 
-				float p_consumed = buyerReading;
-				float p_produced = sellerReading;
-				float s_fine = 0, b_fine = 0;
+				double p_consumed = buyerReading;
+				double p_produced = sellerReading;
+				double s_fine = 0, b_fine = 0;
 				if (p_produced < energy) {
 					s_fine = (energy - p_produced) * (price + 2.5f);
 				} else if (p_produced > energy) {
@@ -761,9 +892,9 @@ class AgentWorker {
 				System.out.println("  p_consumed " + p_consumed);
 				System.out.println("  b_fine " + b_fine);
 				System.out.println("  s_fine " + s_fine);
-				dbhelper.updateOrderAmount(p_produced, s_fine, p_consumed, b_fine, orderId);
+				//dbhelper.updateOrderAmount(p_produced, s_fine, p_consumed, b_fine, orderId);
 				System.out.println("  Status completed   ");
-				sdao.updateOrderStatus(orderId);
+				//sdao.updateOrderStatus(orderId);
 				System.out.println("continueStatus5" + continueStatus);
 				validationResponse.put("buyerStartReading", buyerStartReading);
 				validationResponse.put("buyerEndReading",buyerEndReading );
